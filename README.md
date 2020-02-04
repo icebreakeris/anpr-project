@@ -1,25 +1,24 @@
 
 # anpr-project
 ## A Team Software Engineering project. 
-This repo is going to be used for the software engineering project.
-
-## Objectives
-This project is about an automatic number plate recognition system that will be using opencv, machine learning and a GUI. 
+An Automatic Number Plate Recognition application that uses OpenCV, Tesseract OCR.
 
 # Dependencies
+
 - OpenCV
-- GUI 
-- Python 3.7
+- PyQt5?
+- Python 3.7+
+- imutils
+- Numpy
+- Google Tesseract OCR
 
+# Installing
 
+To install all Python library requirements, run:
+>pip install requirements.txt
 
-
->test 
-
-
-// test
-
-# test
+# Changelog
+[Changelog](CHANGELOG.md)
 
 
 "test"
