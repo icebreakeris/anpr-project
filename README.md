@@ -49,7 +49,7 @@ Type in `python main.py [image.jpg/png]`
 
 5. Launch the program again and you should get the results. 
 
-# Data set
+# Dataset
 A dataset has been provided. Download `pdataset.zip` to view the images.
 
 ## Using VirtualEnv
