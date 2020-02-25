@@ -20,28 +20,29 @@ TODO:
 
 
 class PlateScanner:
-    def __init__(self, img_url, tesseract_url, show_steps = False): 
+    def __init__(self, img_url, cfg):
+        self.cfg = cfg
+        
+        self.show_steps = self.cfg["show_steps"]
+        pytesseract.pytesseract.tesseract_cmd = self.cfg["tesseract_url"] 
+
         self.image = None
         self.url = img_url
-        self.show_steps = show_steps
+
         self.morph_kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, ksize=(20,4))
         self.plate_kernel = np.ones((5,2), np.uint8)
 
         #editing the tesseract character whitelist ensures that characters such as #./!":@% etc. are not processed.
-        #Letter Q has been removed from the whitelist as it is not used on UK number plates 
-
+        #Letter Q has been removed from the whitelist as it is not used on UK number plates and confuses tesseract 
         self.ocr_config = r'-c tessedit_char_whitelist=ABCDEFGHJKILMNOPRSTUVWXYZ023456789 --psm 7' #7
-        pytesseract.pytesseract.tesseract_cmd = tesseract_url
         
     def scan_plate(self): 
-        #add more file validation
-        #zzz...
-        config.check_config()
         if not os.path.isfile(self.url): 
             print("[-] File not found. Enter the correct url and try again.") 
             return
 
         self.image = cv2.imread(self.url)
+
         #scales the images to width 600
         #it is more difficult and a lot slower to process high resolution images 
         self.image = imutils.resize(self.image, width=600)
@@ -244,5 +245,9 @@ class PlateScanner:
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        PlateScanner(sys.argv[1], r"C:\Users\minda\AppData\Local\Tesseract-OCR\tesseract.exe", True).scan_plate()
+        cfg = config.check_config()
+        if not cfg:
+            exit()
+
+        PlateScanner(sys.argv[1], cfg).scan_plate()
 

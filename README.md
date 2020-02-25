@@ -32,9 +32,15 @@ As per Tesseract-OCR [wiki](https://github.com/tesseract-ocr/tesseract/wiki), ru
     sudo apt install libtesseract-dev
 
 # Configuration
-1. ..
-2. ..
+1. Launch the program first to create the config file if one not present.
 
+2. Open `config.json` 
+
+3. Enter the file url of `tesseract.exe` into the `tesseract_url` variable. If you cannot find `tesseract.exe`, ensure it is installed first.  
+
+4. If you wish to view the steps the program has taken to get the result, set `show_steps` to `true`, otherwise leave it as `false`.
+
+5. Launch the program again and you should get the results. 
 
 ## Using VirtualEnv
 It is recommended to use a python virtual environment for this project, as it installs quite a few additional pip packages.
