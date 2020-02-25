@@ -49,7 +49,8 @@ Type in `python main.py [image.jpg/png]`
 
 5. Launch the program again and you should get the results. 
 
-
+# Data set
+A dataset has been provided. Download `pdataset.zip` to view the images.
 
 ## Using VirtualEnv
 It is recommended to use a python virtual environment for this project, as it installs quite a few additional pip packages.
