@@ -1,29 +1,64 @@
 
 # anpr-project
 ## A Team Software Engineering project. 
-This repo is going to be used for the software engineering project.
-
-## Objectives
-This project is about an automatic number plate recognition system that will be using opencv, machine learning and a GUI. 
+An Automatic Number Plate Recognition application that uses OpenCV and Tesseract OCR.
 
 # Dependencies
+
 - OpenCV
-- GUI 
-- Python 3.7
+- PyQt5?
+- Python 3.7+
+- imutils
+- Google Tesseract OCR
 
 
+# Installing Dependencies
 
+To install all Python library requirements, in the command-line run:
 
->test 
+    pip install requirements.txt
 
+## Installing Tesseract
 
-// test
+### Windows 
 
-# test
+Download and install Tesseract 4.0.x from [here](https://github.com/UB-Mannheim/tesseract/wiki). 
 
+### Linux 
 
-"test"
+As per Tesseract-OCR [wiki](https://github.com/tesseract-ocr/tesseract/wiki), run:
+    
+    sudo apt install tesseract-ocr
+    sudo apt install libtesseract-dev
 
-"""test"""
+# Using the program
+There are **two** ways of using the program.
 
-`test`
+The first way is to launch `scanner.py` through command line. 
+
+Type in `python scanner.py [image.jpg/png]`
+
+The second way is to launch `eval.py`.
+
+Type in `python eval.py`
+
+This will go through every image in the dataset, save the results into a `finalplates` directory and output the evaluated performance.
+
+**__Ensure you have installed all the dependencies first and have completed the config.__**
+
+# Configuration
+1. Launch the program first to create the config file if one not present.
+
+2. Open `config.json` 
+
+3. Enter the file url of `tesseract.exe` into the `tesseract_url` variable. If you cannot find `tesseract.exe`, ensure it is installed first.  
+
+4. If you wish to view the steps the program has taken to get the result, set `show_steps` to `true`, otherwise leave it as `false`.
+
+5. Launch the program again and you should get the results. 
+
+# Dataset
+A dataset has been provided. Download `pdataset.zip` to view the images.
+
+## Using VirtualEnv
+It is recommended to use a python virtual environment for this project, as it installs quite a few additional pip packages.
