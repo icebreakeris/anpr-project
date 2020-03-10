@@ -1,18 +1,15 @@
 #pylint: disable=no-member
 
 """
-This .py file is used to evaluate the performance of the ANPR system.
-It gets the average processing time of the system, the accuracy of OCR and saves the final images
+This file is used to evaluate the performance of the ANPR system.
+It gets the average processing time of the system, the accuracy of OCR using Levenshtein Distance and saves the final images.
 
 """
-
-
 
 from scanner import PlateScanner
 import os 
 import config
 import cv2
-import numpy
 import json
 import numpy as np
 import pathlib
@@ -23,7 +20,8 @@ def main():
     times = []
     plates = []
     percentages = []
-    
+    recognised_plates = []
+
     cfg = config.check_config()
     if not cfg:
         exit()
@@ -32,10 +30,10 @@ def main():
 
     for a in os.listdir("pdataset"): 
         if a.endswith(".jpg") or a.endswith(".png"):
-            time, plate, end_img, plate_img = PlateScanner(f"pdataset/{a}",cfg).scan_plate()
-
             #create directory if it doesnt exist
             pathlib.Path("finalplates/plates").mkdir(parents=True, exist_ok=True)
+
+            time, plate, end_img, plate_img = PlateScanner(f"pdataset/{a}",cfg).scan_plate()
 
             cv2.imwrite(f"finalplates/final_{a}", end_img)
 
@@ -54,9 +52,7 @@ def main():
             plates.append(plate)
             percentages.append(percent)
 
-    recognised_plates = []
     for b in plates:
-        b = b.replace(" ", "")
         if b == "" or b == "NOPLATE":
             continue
 
@@ -64,13 +60,18 @@ def main():
 
     mean, sd = calculate_performance(times)
     percent_mean, percent_sd = calculate_performance(percentages)
-    print("\n\n", 20*"===", f"\nMEAN PROCESS: {round(mean,2)}ms\nPROCESS SD: {round(sd,2)}\nREC: {len(recognised_plates)}/{len(plates)} ({round(len(recognised_plates) / len(plates) * 100, 2)}%)\nACC: {round(percent_mean, 2)}%\nACC SD: {round(percent_sd, 2)}")
+    print("\n\n", 20*"===", f"\n\
+        MEAN PROCESS: {round(mean,2)}ms\n\
+        PROCESS SD: {round(sd,2)}\n\
+        REC: {len(recognised_plates)}/{len(plates)} ({round(len(recognised_plates) / len(plates) * 100, 2)}%)\n\
+        ACC: {round(percent_mean, 2)}%\n\
+        ACC SD: {round(percent_sd, 2)}")
 
 #calculates mean and standard deviation of a given list
 def calculate_performance(list): 
 
-    mean = numpy.mean(list, axis = 0)
-    sd = numpy.std(list, axis = 0)
+    mean = np.mean(list, axis = 0)
+    sd = np.std(list, axis = 0)
 
     end_list = [x for x in list if (x > mean - 2 * sd)]
     end_list = [x for x in end_list if (x < mean + 2 * sd)]
@@ -102,9 +103,9 @@ def get_ld(recognised, correct):
                 minimum = min(distance[i-1][j]+1, distance[i][j-1]+1, distance[i-1][j-1]+cost)         
                 distance[i].insert(j, minimum)
 
-    #ratio = round((((m+n) - distance[-1][-1]) / (m+n)) * 100, 2)
-    ratio = round((1 - distance[-1][-1]/max(m, n)) * 100, 2)
-    return distance[-1][-1], ratio
+    #percent = round((((m+n) - distance[-1][-1]) / (m+n)) * 100, 2)
+    percent = round((1 - distance[-1][-1]/max(m, n)) * 100, 2)
+    return distance[-1][-1], percent
 
 if __name__ == "__main__":
     main()
