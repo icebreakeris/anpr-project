@@ -18,6 +18,7 @@ def check_config():
         create_default_config()
         return False
 
+    #if config exists but is empty
     if len(open("config.json", "r").read()) <= 0: 
         LOGGER.info("Config.json empty. Creating a new one...")
         create_default_config()
@@ -29,22 +30,20 @@ def check_config():
         LOGGER.critical(f"Could not read config.json. Remove the file, launch the program and try configuring again. JSON ERROR: {ex}")
         return False
 
-    if "tesseract_url" not in content:
-        LOGGER.critical("Variable tesseract_url not in config. Value ignored and config recreated...")
-        create_default_config()
-        return False
-    
+    #checks if config contains necessary variables
+    for a in DEFAULT_CONFIG:
+        if a not in content: 
+            LOGGER.critical(f"Variable {a} not in config. Value ignored and config recreated...")
+            create_default_config()
+            return False
+
     if not os.path.isfile(content["tesseract_url"]):
         LOGGER.critical("Tesseract.exe not found. Check config.json and enter a valid url.")
-        return False
-    
-    if "show_steps" not in content:
-        LOGGER.critical("Variable show_steps not in config. Value ignored and config recreated...")
-        create_default_config()
         return False
 
     if type(content["show_steps"]) is not bool:
         LOGGER.critical("show_steps invalid. Value should be true/false")
         return False
 
+    #return the configuration if it has passed all the checks
     return content

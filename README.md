@@ -32,9 +32,17 @@ As per Tesseract-OCR [wiki](https://github.com/tesseract-ocr/tesseract/wiki), ru
     sudo apt install libtesseract-dev
 
 # Using the program
-At this stage, you can only launch `main.py` through the command-line.
+There are **two** ways of using the program.
 
-Type in `python main.py [image.jpg/png]`
+The first way is to launch `scanner.py` through command line. 
+
+Type in `python scanner.py [image.jpg/png]`
+
+The second way is to launch `eval.py`.
+
+Type in `python eval.py`
+
+This will go through every image in the dataset, save the results into a `finalplates` directory and output the evaluated performance.
 
 **__Ensure you have installed all the dependencies first and have completed the config.__**
 
