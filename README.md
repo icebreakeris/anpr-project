@@ -17,7 +17,7 @@ An Automatic Number Plate Recognition application that uses OpenCV and Tesseract
 
 To install all Python library requirements, in the command-line run:
 
-    pip install requirements.txt
+    pip install -r requirements.txt
 
 ## Installing Tesseract
 
