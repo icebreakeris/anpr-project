@@ -1,6 +1,5 @@
 #pylint: disable=no-member
 
-
 import sys
 import numpy as np
 import cv2
@@ -16,6 +15,7 @@ class PlateScanner:
         self.cfg = cfg
         
         self.show_steps = self.cfg["show_steps"]
+        self.save_images = self.cfg["save_images"]
         pytesseract.pytesseract.tesseract_cmd = self.cfg["tesseract_url"] 
 
         self.image = None
@@ -109,6 +109,12 @@ class PlateScanner:
         end = time.time()
         end_time = int((end - start) * 1000)
         #print(f"Time elapsed: {int((end-start)*1000)}ms")
+
+        if self.save_images:
+            if self.image is not None and self.plate_img is not None:
+                cv2.imwrite("Final Image.png", self.image)
+                cv2.imwrite("Final Plate.png", self.plate_img)
+                print("Images saved!")
 
         return end_time, self.plate_text, self.image, self.plate_img
         #cv2.waitKey(0)

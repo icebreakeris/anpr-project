@@ -2,7 +2,7 @@ import json
 import os
 import log
 
-DEFAULT_CONFIG = {"tesseract_url" : "", "show_steps" : False}
+DEFAULT_CONFIG = {"tesseract_url" : "", "show_steps" : False, "save_images" : False}
 LOGGER = log.get_logger(__name__)
 
 def create_default_config(): 
@@ -10,6 +10,45 @@ def create_default_config():
         cfg.writelines(json.dumps(DEFAULT_CONFIG, indent=3))
         LOGGER.info("Default config created. Ensure it is filled out and try again.")
         return False
+
+def set_tesseract_url(url):
+    if not url: 
+        return False
+
+    config = check_config()
+    if not config:
+        return False
+
+    with open("config.json", "w") as cfg:
+        config["tesseract_url"] = url
+        print(config)
+        cfg.writelines(json.dumps(config, indent=3))
+        return True
+
+def set_save_images(boolean):
+    config = check_config()
+
+    if not config:
+        return 
+    
+    with open("config.json", "w") as cfg: 
+        config["save_images"] = boolean
+        print(config)
+        cfg.writelines(json.dumps(config, indent=3))
+        return 
+
+def set_steps(steps):
+    print(steps)
+    config = check_config()
+
+    if not config:
+        return 
+
+    with open("config.json", "w") as cfg:
+        config["show_steps"] = steps
+        print(config)
+        cfg.writelines(json.dumps(config, indent=3))
+        return 
 
 def check_config():
     #if config doesnt exist, create one with default values
@@ -36,10 +75,6 @@ def check_config():
             LOGGER.critical(f"Variable {a} not in config. Value ignored and config recreated...")
             create_default_config()
             return False
-
-    if not os.path.isfile(content["tesseract_url"]):
-        LOGGER.critical("Tesseract.exe not found. Check config.json and enter a valid url.")
-        return False
 
     if type(content["show_steps"]) is not bool:
         LOGGER.critical("show_steps invalid. Value should be true/false")

@@ -6,10 +6,11 @@ An Automatic Number Plate Recognition application that uses OpenCV and Tesseract
 # Dependencies
 
 - OpenCV
-- PyQt5?
+- Numpy
+- PyQt5
 - Python 3.7+
 - imutils
-- Google Tesseract OCR
+- Google Tesseract OCR 4.0.x
 
 
 # Installing Dependencies
@@ -32,22 +33,45 @@ As per Tesseract-OCR [wiki](https://github.com/tesseract-ocr/tesseract/wiki), ru
     sudo apt install libtesseract-dev
 
 # Using the program
-There are **two** ways of using the program.
+There are **three** ways of using the program.
 
-The first way is to launch `scanner.py` through command line. 
+The first way is to launch `scanner.py` through command line, type in:
 
-Type in `python scanner.py [image.jpg/png]`
+    python scanner.py [image.jpg/png]
 
-The second way is to launch `eval.py`.
+The second way is to launch `eval.py`, type in: 
+    
+    python eval.py
 
-Type in `python eval.py`
+This is used to evaluate the performance of the system. It goes through every image in the dataset, saves the results into the `finalplates` directory and outputs the evaluated performance.
 
-This will go through every image in the dataset, save the results into a `finalplates` directory and output the evaluated performance.
+The third way is to use the GUI.
 
-**__Ensure you have installed all the dependencies first and have completed the config.__**
+Type into the command line: 
+
+    python gui.py
+
+This will launch a GUI that you can use instead.
+
+**__Ensure you have installed all the dependencies first and have completed the config, otherwise this system will not work properly.__**
 
 # Configuration
-1. Launch the program first to create the config file if one not present.
+
+## Using the GUI
+1. Launch `gui.py`.
+
+2. This will automatically create a configuration file
+
+3. In the settings group, you will need to locate the tesseract.exe file.
+
+4. Then you are given an option to save the images. Check it if you wish to do so.
+
+5. You are also given the choice of showing processing steps. Check it if you wish to do so.
+
+
+## Using command-line
+
+1. Launch the program using `scanner.py` or `eval.py` first.
 
 2. Open `config.json` 
 
