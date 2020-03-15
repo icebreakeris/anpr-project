@@ -23,7 +23,7 @@ To install all Python library requirements, in the command-line run:
 
 ### Windows 
 
-Download and install Tesseract 4.0.x from [here](https://github.com/UB-Mannheim/tesseract/wiki). 
+Download and install Tesseract 4.0.x from [here](https://digi.bib.uni-mannheim.de/tesseract/). 
 
 ### Linux 
 
