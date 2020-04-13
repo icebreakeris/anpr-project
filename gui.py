@@ -9,6 +9,7 @@ import sys
 
 
 class Ui_MainWindow(QtWidgets.QMainWindow):
+
     def setupUi(self, MainWindow):
         self.img_url = ""
 
@@ -95,15 +96,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.labelMadeBy.setText("<html><head/><body><p align=\"center\">Made by: TSE Group 32</p></body></html>")
 
         MainWindow.setCentralWidget(self.centralwidget)
-        
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1078, 21))
-
-        MainWindow.setMenuBar(self.menubar)
-        
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-
-        MainWindow.setStatusBar(self.statusbar)
 
         cfg = config.check_config()
         if cfg: 
@@ -129,7 +121,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def show_help_window(self):
         self.help_window = QtWidgets.QMainWindow()
         self.help_window.ui = Ui_HelpWindow()
+        
+        #sets up the ui
         self.help_window.ui.setupUi(self.help_window)
+
+        #destroys the window widget once it is closed
         self.help_window.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.help_window.show() 
 
@@ -188,6 +184,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.lineImgUrl.setText(self.img_url)
 
         if self.img_url:
+            #using opencv for image reading to avoid issues with png images
             pixmap = QtGui.QPixmap(convert_image(cv2.imread(self.img_url)))
             pixmap = pixmap.scaled(self.imgStart.width(), self.imgStart.height(), QtCore.Qt.KeepAspectRatio)
             self.imgStart.setPixmap(pixmap)
@@ -346,7 +343,6 @@ class Ui_HelpWindow(QtWidgets.QMainWindow):
         self.imgTessLocation.setAlignment(QtCore.Qt.AlignCenter)
         set_image(self.imgTessLocation, convert_image(cv2.imread("assets/images/help_1.png")))
 
-
         self.imgCheckmarks = QtWidgets.QLabel(self.centralwidget)
         self.imgCheckmarks.setGeometry(QtCore.QRect(450, 180, 441, 121))
         self.imgCheckmarks.setFrameShape(QtWidgets.QFrame.Box)
@@ -358,7 +354,6 @@ class Ui_HelpWindow(QtWidgets.QMainWindow):
         self.imgSelection.setFrameShape(QtWidgets.QFrame.Box)
         self.imgSelection.setAlignment(QtCore.Qt.AlignCenter)
         set_image(self.imgSelection, convert_image(cv2.imread("assets/images/help_3.png")))
-
 
         self.imgFormats = QtWidgets.QLabel(self.centralwidget)
         self.imgFormats.setGeometry(QtCore.QRect(450, 570, 441, 121))
@@ -383,7 +378,6 @@ class Ui_HelpWindow(QtWidgets.QMainWindow):
         HelpWindow.setStatusBar(self.statusbar)
 
         QtCore.QMetaObject.connectSlotsByName(HelpWindow)
-
 
 def convert_image(img):
     gray_color_table = [QtGui.qRgb(i, i, i) for i in range(256)]

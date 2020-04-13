@@ -5,6 +5,7 @@ import numpy as np
 import cv2
 import imutils
 import pytesseract
+import pathlib
 
 import os
 import time
@@ -113,8 +114,11 @@ class PlateScanner:
 
         if self.save_images:
             if self.image is not None and self.plate_img is not None:
-                cv2.imwrite("Final Image.png", self.image)
-                cv2.imwrite("Final Plate.png", self.plate_img)
+
+                pathlib.Path("final_images/").mkdir(parents=True, exist_ok=True)
+                
+                cv2.imwrite("final_images/Final Image.png", self.image)
+                cv2.imwrite("final_images/Final Plate.png", self.plate_img)
 
         return end_time, self.plate_text, self.image, self.plate_img, self.step_images
         #cv2.waitKey(0)
