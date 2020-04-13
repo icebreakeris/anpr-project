@@ -13,6 +13,7 @@ import config
 class PlateScanner:
     def __init__(self, img_url, cfg):
         self.cfg = cfg
+        self.step_images = []
         
         self.show_steps = self.cfg["show_steps"]
         self.save_images = self.cfg["save_images"]
@@ -63,24 +64,24 @@ class PlateScanner:
         self.image = self.set_roi()
         gray = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
 
-        if self.show_steps: cv2.imshow("Grayscale conversion", gray)
+        if self.show_steps: self.step_images.append(gray)
     
         blurred = cv2.bilateralFilter(gray, 11, 50, 50)
         #blurred = cv2.GaussianBlur(gray, (5,5), 0)
-        if self.show_steps: cv2.imshow("Blurred image", blurred)
+        if self.show_steps: self.step_images.append(blurred)
 
         sobel_x = cv2.Sobel(blurred, cv2.CV_8U, 1,0, ksize=3, borderType=cv2.BORDER_DEFAULT) 
-        if self.show_steps: cv2.imshow("Sobel image", sobel_x)
+        if self.show_steps: self.step_images.append(sobel_x)
 
         _, threshold = cv2.threshold(sobel_x, 100, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
      
-        if self.show_steps: cv2.imshow("threshold image", threshold)
+        if self.show_steps: self.step_images.append(threshold)
         morph = cv2.morphologyEx(threshold, cv2.MORPH_CLOSE, self.morph_kernel)
 
-        if self.show_steps: cv2.imshow("morph image", morph)
+        if self.show_steps: self.step_images.append(morph)
         contours, _ = cv2.findContours(morph, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
-        for i, a in enumerate(contours): 
+        for a in (contours): 
             #shows all potential candidates
             #implement additional contour validation to reduce false positives
             candidate = cv2.minAreaRect(a)
@@ -95,7 +96,7 @@ class PlateScanner:
                 if (x > 0 and y > 0 and w > h): #possibly put w > h into check_size()?
                     new_img = self.image[y:y + h, x:x + w]
                     if self.check_edge_density(new_img) > 0.475:
-                        if self.show_steps: cv2.imshow(f"cropped_plate{i}.png", new_img)
+                        if self.show_steps: self.step_images.append(new_img)
 
                         processed_plate = self.preprocess_plate(new_img)
                         self.plate_text = pytesseract.image_to_string(processed_plate, config=self.ocr_config)
@@ -114,14 +115,12 @@ class PlateScanner:
             if self.image is not None and self.plate_img is not None:
                 cv2.imwrite("Final Image.png", self.image)
                 cv2.imwrite("Final Plate.png", self.plate_img)
-                print("Images saved!")
 
-        return end_time, self.plate_text, self.image, self.plate_img
+        return end_time, self.plate_text, self.image, self.plate_img, self.step_images
         #cv2.waitKey(0)
  
     #takes cut out plate img 
     def check_edge_density(self, plate_img):
-        #refactor
 
         gray = cv2.cvtColor(plate_img, cv2.COLOR_BGR2GRAY)
         _, plate_thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
@@ -153,7 +152,7 @@ class PlateScanner:
         eroded = cv2.erode(threshold, self.plate_kernel, iterations=1)
         threshold_inv = cv2.bitwise_not(eroded)
 
-        if self.show_steps: cv2.imshow("plate threshold", eroded)
+        if self.show_steps: self.step_images.append(eroded)
 
         ctrs, _ = cv2.findContours(threshold_inv, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
@@ -161,26 +160,25 @@ class PlateScanner:
 
         sorted_ctrs = sorted(ctrs, key=lambda ctr: cv2.boundingRect(ctr)[0])
 
-        for i, ctr in enumerate(sorted_ctrs):
+        for ctr in sorted_ctrs:
             x,y,w,h = cv2.boundingRect(ctr)
 
             roi = plate_img[y:y+h, x:x+w]
             
             if self.check_character_size(roi):
-                if self.show_steps: cv2.imshow(f"character{i}", roi)
                 mask[y:y+h, x:x+w] = plate_img[y:y+h, x:x+w]
                 cv2.rectangle(plate_img_copy, (x,y), (x+w, y+h), 255, 2)
 
-        if self.show_steps: cv2.imshow("masked plate 1", mask)
+        if self.show_steps: self.step_images.append(mask)
 
         gray_mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
         _, mask_thresh = cv2.threshold(gray_mask, 110, 255, cv2.THRESH_BINARY)
         mask_eroded = cv2.erode(mask_thresh, self.plate_kernel, iterations=1)
 
 
-        if self.show_steps: cv2.imshow("masked plate 2", mask_thresh)
+        if self.show_steps: self.step_images.append(mask_thresh)
 
-        if self.show_steps: cv2.imshow("plate image", plate_img_copy)
+        if self.show_steps: self.step_images.append(plate_img_copy)
         
         self.plate_img = mask_eroded
         return mask_eroded

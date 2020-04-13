@@ -13,6 +13,7 @@ import cv2
 import json
 import numpy as np
 import pathlib
+import hashlib
 
 def main():
     real_plates = json.loads(open("dataset.json", "r").read())
@@ -33,12 +34,15 @@ def main():
             #create directory if it doesnt exist
             pathlib.Path("finalplates/plates").mkdir(parents=True, exist_ok=True)
 
-            time, plate, end_img, plate_img = PlateScanner(f"pdataset/{a}",cfg).scan_plate()
+            time, plate, end_img, plate_img, _ = PlateScanner(f"pdataset/{a}",cfg).scan_plate()
+
 
             cv2.imwrite(f"finalplates/final_{a}", end_img)
 
             if not plate_img is None:
                 cv2.imwrite(f"finalplates/plates/final_{a}", plate_img)
+                print("end_img " + hashlib.md5(end_img.tostring()).hexdigest())
+                print("plate_img " + hashlib.md5(plate_img.tostring()).hexdigest())
 
             ld, percent = get_ld(plate, real_plates[a])
 

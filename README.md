@@ -10,20 +10,20 @@ An Automatic Number Plate Recognition application that uses OpenCV and Tesseract
 - PyQt5
 - Python 3.7+
 - imutils
-- Google Tesseract OCR 4.0.x
+- Google Tesseract OCR 5.0.0 alpha
 
 
 # Installing Dependencies
 
 To install all Python library requirements, in the command-line run:
 
-    pip install requirements.txt
+    pip install -r requirements.txt
 
 ## Installing Tesseract
 
 ### Windows 
 
-Download and install Tesseract 4.0.x from [here](https://github.com/UB-Mannheim/tesseract/wiki). 
+Download and install Tesseract 5.0.0 alpha from [here](https://github.com/UB-Mannheim/tesseract/wiki). 
 
 ### Linux 
 
