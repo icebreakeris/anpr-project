@@ -1,3 +1,5 @@
+#pylint: disable=no-member
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 from scanner import PlateScanner
 import cv2
@@ -196,7 +198,7 @@ class Ui_ProcessWindow(QtWidgets.QMainWindow):
         self.step_images = steps
     
     def setupUi(self, ProcessWindow):
-        
+        ProcessWindow.setWindowTitle("Process Window")
         ProcessWindow.setFixedSize(1164, 650)
       
         self.imgPlate1 = QtWidgets.QLabel(ProcessWindow)
@@ -278,7 +280,7 @@ class Ui_HelpWindow(QtWidgets.QMainWindow):
 
     def setupUi(self, HelpWindow):
         
-        HelpWindow.setWindowTitle("Help")
+        HelpWindow.setWindowTitle("Help window")
         HelpWindow.setFixedSize(921, 758)
 
         self.centralwidget = QtWidgets.QWidget(HelpWindow)
