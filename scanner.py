@@ -247,8 +247,14 @@ if __name__ == "__main__":
         cfg = config.check_config()
         if not cfg:
             exit()
+        
 
-        time, plate, image, plate_image = PlateScanner(sys.argv[1], cfg).scan_plate()
+        time, plate, image, plate_image, step_images = PlateScanner(sys.argv[1], cfg).scan_plate()
+        if cfg["show_steps"]:
+            if len(step_images) > 0:    
+                for i, image in enumerate(step_images):
+                    cv2.imshow(f"{i}", image)
+
         print(f"Process time: {time}ms\nRecognised plate: {plate}")
         cv2.imshow("Vehicle", image)
         cv2.imshow("Plate Image", plate_image)
