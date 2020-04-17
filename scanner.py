@@ -11,7 +11,8 @@ import os
 import time
 import config
 
-class PlateScanner:
+
+class PlateScanner():
     def __init__(self, img_url, cfg):
         self.cfg = cfg
         self.step_images = []
@@ -46,15 +47,16 @@ class PlateScanner:
         #starts the preprocessing
         return self.preprocess_image()
 
-    def set_roi(self):
+
+    def set_roi(self, image):
         #sets the main region of interest in the image to reduce the amount of false positives
-        (y, x) = self.image.shape[:2]
+        (y, x) = image.shape[:2]
 
         p1 = (int(x/4), int(2*y/4)) 
         p2 = (int(x*4/5), int(2*y))
 
         #slices the current saved image using the points calculated above
-        roi = self.image[p1[1]:p2[1], p1[0]:p2[0], :]
+        roi = image[p1[1]:p2[1], p1[0]:p2[0], :]
         return roi
 
     def preprocess_image(self):
@@ -62,8 +64,8 @@ class PlateScanner:
         
         #cv2.imshow("Original image", self.image)
 
-        self.image = self.set_roi()
-        gray = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
+        self.roi = self.set_roi(self.image)
+        gray = cv2.cvtColor(self.roi, cv2.COLOR_BGR2GRAY)
 
         if self.show_steps: self.step_images.append(gray)
     
@@ -95,17 +97,16 @@ class PlateScanner:
                 x,y,w,h = cv2.boundingRect(points)
     
                 if (x > 0 and y > 0 and w > h): #possibly put w > h into check_size()?
-                    new_img = self.image[y:y + h, x:x + w]
+                    new_img = self.roi[y:y + h, x:x + w]
                     if self.check_edge_density(new_img) > 0.475:
                         if self.show_steps: self.step_images.append(new_img)
 
                         processed_plate = self.preprocess_plate(new_img)
                         self.plate_text = pytesseract.image_to_string(processed_plate, config=self.ocr_config)
 
-                        cv2.drawContours(self.image, [points], 0, (255, 2, 10), 2)
-
-                        cv2.putText(self.image, self.plate_text, (30, 30), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0, 0, 0), 5)
-                        cv2.putText(self.image, self.plate_text, (30, 30), cv2.FONT_HERSHEY_DUPLEX, 0.9, (255,255, 255), 2)
+                        cv2.drawContours(self.roi, [points], 0, (255, 2, 10), 2)
+                        cv2.putText(self.roi, self.plate_text, (30, 30), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0, 0, 0), 5)
+                        cv2.putText(self.roi, self.plate_text, (30, 30), cv2.FONT_HERSHEY_DUPLEX, 0.9, (255,255, 255), 2)
             
         #cv2.imshow("last image", self.image)
         end = time.time()
@@ -113,20 +114,20 @@ class PlateScanner:
         #print(f"Time elapsed: {int((end-start)*1000)}ms")
 
         if self.save_images:
-            if self.image is not None and self.plate_img is not None:
+            if self.roi is not None and self.plate_img is not None:
 
                 pathlib.Path("final_images/").mkdir(parents=True, exist_ok=True)
                 
-                cv2.imwrite("final_images/Final Image.png", self.image)
+                cv2.imwrite("final_images/Final Image.png", self.roi)
                 cv2.imwrite("final_images/Final Plate.png", self.plate_img)
 
-        return end_time, self.plate_text, self.image, self.plate_img, self.step_images
+        return end_time, self.plate_text, self.roi, self.plate_img, self.step_images
         #cv2.waitKey(0)
  
-    #takes cut out plate img 
-    def check_edge_density(self, plate_img):
+    #takes morphed image
+    def check_edge_density(self, morphed_img):
 
-        gray = cv2.cvtColor(plate_img, cv2.COLOR_BGR2GRAY)
+        gray = cv2.cvtColor(morphed_img, cv2.COLOR_BGR2GRAY)
         _, plate_thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
         #calculates how many white pixels there are in the threshold image

@@ -29,7 +29,7 @@ def main():
 
     print("[N] \t\tTIME\tREAL\tREC\t\t ACC")
 
-    for a in os.listdir("pdataset"): 
+    for a in os.listdir("example_dataset"): 
         if a.endswith(".jpg") or a.endswith(".png"):
             #create directory if it doesnt exist
             pathlib.Path("finalplates/plates").mkdir(parents=True, exist_ok=True)
