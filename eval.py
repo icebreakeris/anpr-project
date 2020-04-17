@@ -34,7 +34,7 @@ def main():
             #create directory if it doesnt exist
             pathlib.Path("finalplates/plates").mkdir(parents=True, exist_ok=True)
 
-            time, plate, end_img, plate_img, _ = PlateScanner(f"pdataset/{a}",cfg).scan_plate()
+            time, plate, end_img, plate_img, _ = PlateScanner(f"example_dataset/{a}",cfg).scan_plate()
 
 
             cv2.imwrite(f"finalplates/final_{a}", end_img)
