@@ -93,18 +93,22 @@ class PlateScanner():
             if self.check_plate_size(candidate):
                 box = cv2.boxPoints(candidate)
                 points = np.int0(box)
-
+                
+                #create plate candidate
                 x,y,w,h = cv2.boundingRect(points)
     
-                if (x > 0 and y > 0 and w > h): #possibly put w > h into check_size()?
+                #check if candidate is not just a line
+                if (x > 0 and y > 0 and w > h):
                     new_img = self.roi[y:y + h, x:x + w]
                     if self.check_edge_density(new_img) > 0.475:
                         if self.show_steps: self.step_images.append(new_img)
-
+                        #preprocess plate
                         processed_plate = self.preprocess_plate(new_img)
+                        #scan plate
                         self.plate_text = pytesseract.image_to_string(processed_plate, config=self.ocr_config)
 
                         cv2.drawContours(self.roi, [points], 0, (255, 2, 10), 2)
+                        #create bordered text
                         cv2.putText(self.roi, self.plate_text, (30, 30), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0, 0, 0), 5)
                         cv2.putText(self.roi, self.plate_text, (30, 30), cv2.FONT_HERSHEY_DUPLEX, 0.9, (255,255, 255), 2)
             
@@ -155,6 +159,7 @@ class PlateScanner():
         
         _, threshold = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
         eroded = cv2.erode(threshold, self.plate_kernel, iterations=1)
+        #invert threshold
         threshold_inv = cv2.bitwise_not(eroded)
 
         if self.show_steps: self.step_images.append(eroded)
@@ -164,13 +169,17 @@ class PlateScanner():
         cv2.drawContours(plate_img_copy, ctrs, -1, (0,255,0), 2)
 
         sorted_ctrs = sorted(ctrs, key=lambda ctr: cv2.boundingRect(ctr)[0])
-
+        #look through all contours
         for ctr in sorted_ctrs:
+            #create character candidate
             x,y,w,h = cv2.boundingRect(ctr)
-
+            
+            #cut character out
             roi = plate_img[y:y+h, x:x+w]
             
+            #validate candidate
             if self.check_character_size(roi):
+                #if valid, put candidate on white mask
                 mask[y:y+h, x:x+w] = plate_img[y:y+h, x:x+w]
                 cv2.rectangle(plate_img_copy, (x,y), (x+w, y+h), 255, 2)
 
