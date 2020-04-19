@@ -83,7 +83,7 @@ This will launch a fully functional GUI.
 6. Launch the program again and you should get the results. 
 
 # Dataset
-A dataset has been provided. Download `pdataset.zip` to view the images.
+A dataset has been provided in `example_dataset` folder.
 
 ## Using VirtualEnv
 It is recommended to use a python virtual environment for this project, as it installs quite a few additional pip packages.
