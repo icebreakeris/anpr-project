@@ -78,7 +78,9 @@ This will launch a fully functional GUI.
 
 4. If you wish to view the steps the program has taken to get the result, set `show_steps` to `true`, otherwise leave it as `false`.
 
-5. Launch the program again and you should get the results. 
+5. If you wish to save the resultant images, set `save_images` to `true`, otherwise leave it as `false`.
+
+6. Launch the program again and you should get the results. 
 
 # Dataset
 A dataset has been provided. Download `pdataset.zip` to view the images.
