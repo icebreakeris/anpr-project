@@ -65,23 +65,31 @@ class PlateScanner():
         #cv2.imshow("Original image", self.image)
 
         self.roi = self.set_roi(self.image)
+        #turns image to grayscale
         gray = cv2.cvtColor(self.roi, cv2.COLOR_BGR2GRAY)
 
         if self.show_steps: self.step_images.append(gray)
     
+        #blurs image using bilateral filter to reduce noise
         blurred = cv2.bilateralFilter(gray, 11, 50, 50)
         #blurred = cv2.GaussianBlur(gray, (5,5), 0)
         if self.show_steps: self.step_images.append(blurred)
-
+        
+        #sobel edge detection
         sobel_x = cv2.Sobel(blurred, cv2.CV_8U, 1,0, ksize=3, borderType=cv2.BORDER_DEFAULT) 
         if self.show_steps: self.step_images.append(sobel_x)
-
+    
+        #gets threshold of sobel image using otsu algorithm
         _, threshold = cv2.threshold(sobel_x, 100, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
      
         if self.show_steps: self.step_images.append(threshold)
+        
+        #performs closing operation on thresholded image
         morph = cv2.morphologyEx(threshold, cv2.MORPH_CLOSE, self.morph_kernel)
 
         if self.show_steps: self.step_images.append(morph)
+            
+        #finds all external contours while ignoring child contours
         contours, _ = cv2.findContours(morph, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
         for a in (contours): 
@@ -113,10 +121,12 @@ class PlateScanner():
                         cv2.putText(self.roi, self.plate_text, (30, 30), cv2.FONT_HERSHEY_DUPLEX, 0.9, (255,255, 255), 2)
             
         #cv2.imshow("last image", self.image)
+        #calculates processing time
         end = time.time()
         end_time = int((end - start) * 1000)
         #print(f"Time elapsed: {int((end-start)*1000)}ms")
 
+        #save_images variable in config.json
         if self.save_images:
             if self.roi is not None and self.plate_img is not None:
 
@@ -155,6 +165,7 @@ class PlateScanner():
         mask = np.zeros(plate_img.shape, dtype="uint8")
         mask.fill(255)
 
+        #plate preprocessing
         gray = cv2.cvtColor(plate_img, cv2.COLOR_BGR2GRAY)
         
         _, threshold = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
