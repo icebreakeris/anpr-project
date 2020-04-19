@@ -381,9 +381,10 @@ class Ui_HelpWindow(QtWidgets.QMainWindow):
 
 def convert_image(img):
     gray_color_table = [QtGui.qRgb(i, i, i) for i in range(256)]
+    
     if img is None:
         return QtGui.QImage()
-
+    
     if img.dtype == np.float64:
         img=np.uint8(img)
     
@@ -391,22 +392,29 @@ def convert_image(img):
 
         #if image doesnt have colour channel
         if len(img.shape) == 2:
+            #set image data from image to qimage
             end_img = QtGui.QImage(bytes(img.data), img.shape[1], img.shape[0], img.strides[0], QtGui.QImage.Format_Indexed8)
+            #grayscale image
             end_img.setColorTable(gray_color_table)
             return end_img
         
         elif len(img.shape) == 3:
             if img.shape[2] == 3:
+                #if the image does have a colour channel, return that image with the correct data
+                #first the image returned is in the BGR (blue, green, red) format which means it needs to be swapped to RGB (red, green, blue).
                 end_img = QtGui.QImage(bytes(img.data), img.shape[1], img.shape[0], img.shape[1] * 3, QtGui.QImage.Format_RGB888).rgbSwapped() 
                 return end_img
 
 def set_image(img_widget, img):
+    #sets given image to given widget
     pixmap = QtGui.QPixmap(img)
     pixmap = pixmap.scaled(img_widget.width(), img_widget.height(), QtCore.Qt.KeepAspectRatio)
     img_widget.setPixmap(pixmap)
 
 def set_theme(app):
+    #sets dark theme
     app.setStyle('Fusion')
+    
     palette = QtGui.QPalette()
     palette.setColor(QtGui.QPalette.Window, QtGui.QColor(53,53,53))
     palette.setColor(QtGui.QPalette.WindowText, QtCore.Qt.white)
@@ -418,9 +426,9 @@ def set_theme(app):
     palette.setColor(QtGui.QPalette.Button, QtGui.QColor(53,53,53))
     palette.setColor(QtGui.QPalette.ButtonText, QtCore.Qt.white)
     palette.setColor(QtGui.QPalette.BrightText, QtCore.Qt.red)
-         
     palette.setColor(QtGui.QPalette.Highlight, QtGui.QColor(142,45,197).lighter())
     palette.setColor(QtGui.QPalette.HighlightedText, QtCore.Qt.black)
+    
     app.setPalette(palette)
 
 if __name__ == "__main__":
