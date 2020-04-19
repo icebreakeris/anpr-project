@@ -45,13 +45,11 @@ The second way is to launch `eval.py`, type in:
 
 This is used to evaluate the performance of the system. It goes through every image in the dataset, saves the results into the `finalplates` directory and outputs the evaluated performance.
 
-The third way is to use the GUI.
-
-Type into the command line: 
+The third way is to use the GUI, type in: 
 
     python gui.py
 
-This will launch a GUI that you can use instead.
+This will launch a fully functional GUI.
 
 **__Ensure you have installed all the dependencies first and have completed the config, otherwise this system will not work properly.__**
 
