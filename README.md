@@ -11,7 +11,8 @@ An Automatic Number Plate Recognition application that uses OpenCV and Tesseract
 - Python 3.7+
 - imutils
 - Google Tesseract OCR 5.0.0 alpha
-
+- setuptools 40.8.0
+- pywin32
 
 # Installing Dependencies
 
