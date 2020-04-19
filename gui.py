@@ -142,26 +142,31 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         msg.exec_()
 
     def start_scan(self):
+        #if img url is not entered
         if self.img_url == "" or self.img_url == None:
             self.show_message("Error", "Image Error", "No image selected!")
             return
-
+        #check config
         cfg = config.check_config()
         if cfg:
             if not cfg["tesseract_url"]:
                 self.show_message("Error", "error", "Tesseract.exe not found.")
                 return
 
+            #scan plate using given url 
             _, plate, end_img, plate_img, step_images = PlateScanner(self.img_url,cfg).scan_plate()
 
             print("scanned!")
+            #if the scan is successful
             if plate is not None and end_img is not None and plate_img is not None:
+                #convert images
                 end_img = convert_image(end_img)
                 plate_img = convert_image(plate_img)
-         
+                #set images to widgets
                 set_image(self.imgResult, end_img)
                 set_image(self.imgPlate, plate_img)
                 
+                #if step_images is non zero means that show processing steps is enabled
                 if len(step_images) != 0:
                     self.process_window = QtWidgets.QMainWindow()
                     self.process_window.ui = Ui_ProcessWindow(step_images)
@@ -169,17 +174,21 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                     self.process_window.setAttribute(QtCore.Qt.WA_DeleteOnClose)
                     self.process_window.show()
             else:
+                #if scan failed
                 self.imgResult.setText("Plate not detected")
                 self.imgPlate.setText("Plate not detected")
         else:
+            #if config check failed
             self.show_message("Error", "Config error", "Invalid configuration. Please try again.")
 
     def set_tesseract_url(self):
+        #lets user to set tesseract.exe location
         fileName, _ = QtWidgets.QFileDialog.getOpenFileName(None, "Select File", "", "tesseract.exe")
         if config.set_tesseract_url(fileName):
            self.lineTesseract.setText(fileName)
 
     def set_start_img(self):
+        #sets starting image
         self.img_url, _ = QtWidgets.QFileDialog.getOpenFileName(None, "Select Image", "", "Image Files (*.png *.jpg *.jpeg)")
         self.lineImgUrl.setText(self.img_url)
 
