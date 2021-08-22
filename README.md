@@ -3,6 +3,10 @@
 ## A Team Software Engineering project. 
 An Automatic Number Plate Recognition application that uses OpenCV and Tesseract OCR.
 
+Preview video: https://www.youtube.com/watch?v=KPHP257mb5o
+
+[![Preview](https://i.ytimg.com/vi_webp/KPHP257mb5o/maxresdefault.webp)](https://www.youtube.com/watch?v=KPHP257mb5o)
+
 # Dependencies
 
 - Python 3.7+
